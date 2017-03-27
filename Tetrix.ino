@@ -10,7 +10,7 @@ int board[8][8];
 
 //ARREGLO DE POSICIONES ENCENDIDAS
 bool useds[8];
-
+char randomForms [8];
 bool filesToMove[8];
 
 //CONTADOR DE LIMPIEZA CUANDO LLEGE A 8 PERMITE
@@ -45,6 +45,11 @@ void Clear() {
       for(int i=0; i<8; i++){
           digitalWrite(ground[i],LOW);//LOW APAGA LAS FILAS - HIGH LAS ENCIENDE.
           digitalWrite(volt[i], HIGH);//HIGH APAGA LAS COLUMNAS - LOW LAS ENCIENDE.
+      }
+      for(int i=0; i<8; i++){
+          for(int j=0; j<8; j++){
+            board[i][j] = 0;
+          }
       }
 }
 //LIMPIA LA FILA QUE ESTE ENCENDIDA DEL TODO
@@ -396,18 +401,122 @@ void printAll(){
      Serial.println("");  
   }
 }
+char getForm(){
+  int tmp = random(0, 8);
+  switch(tmp){
+    case 0:
+      return 'O';
+    break;
+    
+    case 1:
+      return 'L';
+    break;
+      
+    case 2:
+      return 'J';
+    break;
+    
+    case 3:
+      return 'S';
+    break;
+    
+    case 4:
+      return 'Z';
+    break;
+    
+    case 5:
+      return 'T';
+    break;
+    
+    case 6:
+      return 'I';
+    break;
+    
+    default :
+      return 'O';
+    break;
+  }
+}
+void you_lose()
+{
+  for(int time=0;time<=100;time++)
+  {
+  for(int i=0;i<=4;i++)
+   {
+   digitalWrite(ground[2],LOW);
+   digitalWrite(volt[1],LOW); 
+   digitalWrite(volt[3],LOW); 
+   digitalWrite(ground[3],HIGH);     // ojos 
+   delay(1);
+   digitalWrite(volt[1],HIGH); 
+   digitalWrite(volt[3],HIGH); 
+   digitalWrite(ground[3],LOW);
+   
+   
+   digitalWrite(volt[0],LOW);      //primera parte 
+   digitalWrite(volt[4],LOW); 
+   digitalWrite(ground[0],HIGH);
+   delay(1);
+   digitalWrite(volt[0],HIGH); 
+   digitalWrite(volt[4],HIGH); 
+   digitalWrite(ground[0],LOW);
+   
+   
+    digitalWrite(volt[1],LOW);      //base de la sonrisa 
+   digitalWrite(volt[2],LOW); 
+   digitalWrite(volt[3],LOW); 
+   digitalWrite(ground[1],HIGH);
+   digitalWrite(ground[2],LOW);
+   delay(1);
+   digitalWrite(volt[1],HIGH); 
+   digitalWrite(volt[2],HIGH);
+  digitalWrite(volt[3],HIGH);  
+   digitalWrite(ground[1],LOW);
+  }
+  }
+}
+
 int c=0;
-int s=0;
+int moving = 3;
 int a=0;
 int f=0;
-
+char form;
+bool next_form = true;
 void loop() {
-     if(c<8){
-       if(c>2){
-        I(c,1);
-       }else{
-        I(c,1);
-       }
+  
+     if(next_form){
+        Serial.println("Iniciando");
+        form = getForm();
+        next_form = false;
+        c = 0;
+     }
+     
+     if(form=='O'&& c<8){
+       O2(c,moving);
+       c++;
+     }
+     else if(form=='L' && c<8){
+       L(c,moving);
+       c++;
+     }
+     else if(form=='J' && c<8){
+       J(c,moving);
+       c++;
+     }
+     else if(form=='S' && c<8){
+       S(c,moving);
+       c++;
+     }
+     else if(form=='Z' && c<8){
+       Z(c,moving);
+       c++;
+     }
+     else if(form=='T' && c<8){
+       T(c,moving);
+       c++;
+     }
+     else if(form=='I' && c<8){
+       I(c,moving);
        c++;
      }
 //     else if(c>=8 && s<8){
@@ -439,32 +548,54 @@ void loop() {
         useds[i] = searchBoard(i);
      }
      reloadBoard();
-     printAll();
-     
-     if(c<8){
-      I_erase(c,1);
-     }
-//     else if(c>=8 && s<8){
-//      O2_erase(s,2);
-//     }
-//     else if(c>=8 && s>=8 && a<8){
-//      O2_erase(a,4);
-//     }
-//     else if(c>=8 && s>=8 && a>=8 && f<8){
-//      O2_erase(f,6);
-//     }
+     //printAll();
 
+     if(form=='O' && c<8){
+        if(c<8){
+        O2_erase(c,moving);
+        }  
+     }
+     else if(form=='L' && c<8){
+        if(c<8){
+        L_erase(c,moving);
+        }  
+     }
+     else if(form=='J' && c<8){
+        if(c<8){
+        J_erase(c,moving);
+        }  
+     }
+     else if(form=='S' && c<8){
+        if(c<8){
+        S_erase(c,moving);
+        }  
+     }
+     else if(form=='Z' && c<8){
+        if(c<8){
+        Z_erase(c,moving);
+        }  
+     }
+     else if(form=='T' && c<8){
+        if(c<8){
+        T_erase(c,moving);
+        }  
+     }
+     else if(form=='I' && c<8){
+        if(c<8){
+        I_erase(c,moving);
+        }  
+     }
      else{
      //VERIFICADOR DE LINEAS COMPLETAS
      //SI ESTAN COMPLETAS LAS ELIMINA
      for(int i=0; i<8; i++){
         for(int j=0; j<8; j++){
         if(board[i][j]==0){
-          //Serial.println("Esta incompleta");
+          Serial.println("Esta incompleta");
           counter = 0;
           continue;
         }else{
-          //Serial.println("Sumando al counter");
+          Serial.println("Sumando al counter");
           filesToMove[i] = true;
           counter++;
         }
@@ -488,6 +619,17 @@ void loop() {
             }
          }
        }
+       for(int e=0; e<8; e++){
+          if(board[0][e] == 1){
+            Clear();
+            you_lose();
+            next_form = true;
+            c=0;
+            break;
+          }
+       }
+       Serial.println("Termino");
+       next_form = true;
      }
 }
 

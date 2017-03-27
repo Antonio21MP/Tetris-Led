@@ -528,8 +528,10 @@ void loop() {
      
      if(next_form){
         Serial.println("Iniciando");
-        form = 'I';
+        form = getForm();
         next_form = false;
+        moving = 3;
+        moving = 3;
         c = 0;
      }
      delay(100);

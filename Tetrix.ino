@@ -191,7 +191,7 @@ void reloadBoard(){
     }
   }
 }
-//CUADRO EN MATRIZ
+//O EN MATRIZ
 void O2(int x, int y){
     delay(50);
     if((x == 0 || x >= 1) && board[x][y] == 0 && board[x][y+1] == 0){
@@ -206,7 +206,7 @@ void O2(int x, int y){
       board[x-1][y+1] = 1;
     }
 }
-//LIMPIEZA DE RASTRO DEL CUADRO
+//LIMPIEZA DE RASTRO DEL O
 void O2_erase(int x, int y){
     delay(50);
     if(x >=2 && board[x][y] != 1 && board[x][y+1] != 1){
@@ -214,7 +214,179 @@ void O2_erase(int x, int y){
       board[x-2][y+1] = 0; 
     }
 }
+//J EN MATRIZ
+void J(int x, int y){
+    delay(50);
+    if((x == 0 || x >= 1) && board[x][y] == 0 && board[x][y+1] == 0){
+      //Serial.println("Entro 1");
+      board[x][y] = 1;
+      board[x][y+1] = 1; 
+    }
+    delay(50);
+    if(x >=1 && board[x][y] == 0 && board[x][y+1] == 0){
+      //Serial.println("Entro 2");
+      board[x-1][y] = 1;
+    }
+    delay(50);
+    if(x >=2 && board[x][y] == 0 && board[x][y+1] == 0){
+      //Serial.println("Entro 2");
+      board[x-2][y] = 1;
+    }
+}
+//LIMPIEZA DE RASTRO DE J
+void J_erase(int x, int y){
+    delay(50);
+    if(x >=2 && board[x][y] != 1 && board[x][y+1] != 1){
+      board[x-3][y] = 0;
+      board[x-1][y+1] = 0;
+      board[x-2][y+1] = 0;
+      board[x-3][y+1] = 0;
+    }
+}
+//L EN MATRIZ
+void L(int x, int y){
+    delay(50);
+    if((x == 0 || x >= 1) && board[x][y] == 0 && board[x][y+1] == 0){
+      //Serial.println("Entro 1");
+      board[x][y] = 1;
+      board[x][y+1] = 1; 
+    }
+    delay(50);
+    if(x >=1 && board[x][y] == 0 && board[x][y+1] == 0){
+      //Serial.println("Entro 2");
+      board[x-1][y+1] = 1;
+    }
+    delay(50);
+    if(x >=2 && board[x][y] == 0 && board[x][y+1] == 0){
+      //Serial.println("Entro 2");
+      board[x-2][y+1] = 1;
+    }
+}
+//LIMPIEZA DE RASTRO DE L
+void L_erase(int x, int y){
+    delay(50);
+    if(x >=2 && board[x][y] != 1 && board[x][y+1] != 1){
+      board[x-3][y+1] = 0;
+      board[x-1][y] = 0;
+      board[x-2][y] = 0;
+      board[x-3][y] = 0;
+    }
+}
 
+//S EN MATRIZ
+void S(int x, int y){
+    delay(50);
+    if((x == 0)&& board[x][y-1] == 0 && board[x][y] == 0&& board[x-1][y+1] == 0){
+      //Serial.println("Entro 1");
+      board[x][y-1] = 1;
+      board[x][y] = 1;
+    }
+    delay(50);
+    if(x >=1 && board[x][y-1] == 0 && board[x][y] == 0 && board[x-1][y+1] == 0){
+      //Serial.println("Entro 2");
+      board[x][y] = 1;
+      board[x][y-1] = 1;
+      board[x-1][y] = 1;
+      board[x-1][y+1] = 1;
+      
+    }
+}
+//LIMPIEZA DE RASTRO DE S
+void S_erase(int x, int y){
+    delay(50);
+    if(x >=2 && board[x][y] != 1 && board[x-1][y+1] != 1 && board[x][y-1] !=1){
+      board[x-1][y-1] = 0;
+      board[x-2][y-1] = 0;
+      board[x-2][y+1] = 0;
+      board[x-2][y] = 0;  
+    }
+}
+
+//Z EN MATRIZ
+void Z(int x, int y){
+    delay(50);
+    if((x == 0)&& board[x][y+1] == 0 && board[x][y] == 0&& board[x-1][y-1] == 0){
+      //Serial.println("Entro 1");
+      board[x][y+1] = 1;
+      board[x][y] = 1;
+    }
+    delay(50);
+    if(x >=1 && board[x][y+1] == 0 && board[x][y] == 0 && board[x-1][y-1] == 0){
+      //Serial.println("Entro 2");
+      board[x][y] = 1;
+      board[x][y+1] = 1;
+      board[x-1][y] = 1;
+      board[x-1][y-1] = 1;
+      
+    }
+}
+//LIMPIEZA DE RASTRO DE Z
+void Z_erase(int x, int y){
+    delay(50);
+    if(x >=2 && board[x][y] != 1 && board[x-1][y-1] != 1 && board[x][y+1] !=1){
+      board[x-1][y+1] = 0;
+      board[x-2][y-1] = 0;
+      board[x-2][y+1] = 0;
+      board[x-2][y] = 0;  
+    }
+}
+
+//T EN MATRIZ
+void T(int x, int y){
+    delay(50);
+    if((x == 0 || x >=1)&& board[x][y+1] == 0 && board[x][y-1] == 0&& board[x][y] == 0){
+      //Serial.println("Entro 1");
+      board[x][y+1] = 1;
+      board[x][y] = 1;
+      board[x][y-1] = 1;
+    }
+    delay(50);
+    if(x >=1 && board[x][y+1] == 0 && board[x][y] == 0 && board[x-1][y-1] == 0){
+      //Serial.println("Entro 2");
+      board[x-1][y] = 1;
+    }
+}
+//LIMPIEZA DE RASTRO DE T
+void T_erase(int x, int y){
+    delay(50);
+    if(x >=2 && board[x][y] != 1 && board[x][y-1] != 1 && board[x][y+1] !=1){
+      board[x-1][y+1] = 0;
+      board[x-1][y-1] = 0;
+      board[x-2][y] = 0;
+      board[x-2][y-1] = 0;
+      board[x-2][y+1] = 0;  
+    }
+}
+//I EN MATRIZ
+void I(int x, int y){
+    delay(50);
+    if((x == 0 || x >=1)&& board[x][y] == 0 ){
+      //Serial.println("Entro 1");
+      board[x][y] = 1;
+    }
+    delay(50);
+    if(x >=1 && board[x][y] == 0){
+      //Serial.println("Entro 2");
+      board[x][y] = 1;
+      board[x-1][y] = 1;
+    }
+    delay(50);
+    if(x >=2 && board[x][y] == 0){
+      //Serial.println("Entro 2");
+      board[x][y] = 1;
+      board[x-1][y] = 1;
+      board[x-2][y] = 1;
+      
+    }
+    
+}
+//LIMPIEZA DE RASTRO DE I
+void I_erase(int x, int y){
+    delay(50);
+    if(x >=2 && board[x][y] != 1){
+      board[x-3][y] = 0;  
+    }
+}
 void printAll(){
   Serial.println("MATRIZ OF INTS");
   for(int i=0; i<8; i++){
@@ -232,54 +404,55 @@ int f=0;
 void loop() {
      if(c<8){
        if(c>2){
-        O2(c,0);
+        I(c,1);
        }else{
-        O2(c,0);
+        I(c,1);
        }
        c++;
      }
-     else if(c>=8 && s<8){
-      if(s>2){
-        O2(s,2);
-       }else{
-        O2(s,2);
-       }
-       s++;
-     }
-     else if(c>=8 && s>=8 && a<8){
-      if(a>2){
-        O2(a,4);
-       }else{
-        O2(a,4);
-       }
-       a++;
-     }
-     else if(c>=8 && s>=8 && a>=8 && f<8){
-      if(f>2){
-        O2(f,6);
-       }else{
-        O2(f,6);
-       }
-       f++;
-     }
+//     else if(c>=8 && s<8){
+//      if(s>2){
+//        O2(s,2);
+//       }else{
+//        O2(s,2);
+//       }
+//       s++;
+//     }
+//     else if(c>=8 && s>=8 && a<8){
+//      if(a>2){
+//        O2(a,4);
+//       }else{
+//        O2(a,4);
+//       }
+//       a++;
+//     }
+//     else if(c>=8 && s>=8 && a>=8 && f<8){
+//      if(f>2){
+//        O2(f,6);
+//       }else{
+//        O2(f,6);
+//       }
+//       f++;
+//     }
      delay(100);
      for(int i=0; i<8; i++){
         useds[i] = searchBoard(i);
      }
      reloadBoard();
      printAll();
+     
      if(c<8){
-      O2_erase(c,0);
+      I_erase(c,1);
      }
-     else if(c>=8 && s<8){
-      O2_erase(s,2);
-     }
-     else if(c>=8 && s>=8 && a<8){
-      O2_erase(a,4);
-     }
-     else if(c>=8 && s>=8 && a>=8 && f<8){
-      O2_erase(f,6);
-     }
+//     else if(c>=8 && s<8){
+//      O2_erase(s,2);
+//     }
+//     else if(c>=8 && s>=8 && a<8){
+//      O2_erase(a,4);
+//     }
+//     else if(c>=8 && s>=8 && a>=8 && f<8){
+//      O2_erase(f,6);
+//     }
 
      else{
      //VERIFICADOR DE LINEAS COMPLETAS

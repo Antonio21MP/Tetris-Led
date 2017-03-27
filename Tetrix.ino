@@ -3,7 +3,9 @@ int ground[] = {26, 24, 28, 22, 34, 30, 32, 36};
 
 //COLUMNAS
 int volt[] = {23, 25, 29, 37, 31, 35, 33,27};
-int Ti = 1150;
+int Ti = 500;
+int moving = 3;
+int bmoving = 3;
 
 //TABLERO
 int board[8][8];
@@ -12,7 +14,7 @@ int board[8][8];
 bool useds[8];
 char randomForms [8];
 bool filesToMove[8];
-
+int l = 12, r=13;
 //CONTADOR DE LIMPIEZA CUANDO LLEGE A 8 PERMITE
 //PERMITE LA LIMPIEZA DE 1 O MAS FILAS.
 int counter = 0;
@@ -23,6 +25,8 @@ void setup() {
     pinMode(ground[i], OUTPUT);
     pinMode(volt[i], OUTPUT);
   }
+  pinMode(r, INPUT);
+  pinMode(l, INPUT);
   for(int i=0; i<8; i++){
     for(int j=0; j<8; j++){
       board[i][j] = 0;
@@ -199,16 +203,20 @@ void reloadBoard(){
 //O EN MATRIZ
 void O2(int x, int y){
     delay(50);
+    if(x >=1 && board[x][y] == 0 && board[x][y+1] == 0){
+      //Serial.println("Entro 2");
+      
+      board[x][y+2] = 0;
+      board[x][y-2] = 0;
+      board[x-1][y] = 1;
+      board[x-1][y+1] = 1;
+      
+    }
+    delay(50);
     if((x == 0 || x >= 1) && board[x][y] == 0 && board[x][y+1] == 0){
       //Serial.println("Entro 1");
       board[x][y] = 1;
       board[x][y+1] = 1; 
-    }
-    delay(50);
-    if(x >=1 && board[x][y] == 0 && board[x][y+1] == 0){
-      //Serial.println("Entro 2");
-      board[x-1][y] = 1;
-      board[x-1][y+1] = 1;
     }
 }
 //LIMPIEZA DE RASTRO DEL O
@@ -216,7 +224,15 @@ void O2_erase(int x, int y){
     delay(50);
     if(x >=2 && board[x][y] != 1 && board[x][y+1] != 1){
       board[x-2][y] = 0;
-      board[x-2][y+1] = 0; 
+      board[x-2][y+1] = 0;
+      board[x-2][y+2] = 0;
+      board[x-2][y-1] = 0;
+//      if(moving > bmoving){
+//      board[x-2][y-2] = 0;
+//      bmoving = moving;
+//      }else if(moving < bmoving)
+//      board[x-2][y+2] = 0;
+//      bmoving = moving; 
     }
 }
 //J EN MATRIZ
@@ -246,6 +262,10 @@ void J_erase(int x, int y){
       board[x-1][y+1] = 0;
       board[x-2][y+1] = 0;
       board[x-3][y+1] = 0;
+      board[x-1][y-1] = 0;
+      board[x-2][y-1] = 0;
+      board[x-3][y-1] = 0;
+      
     }
 }
 //L EN MATRIZ
@@ -275,6 +295,11 @@ void L_erase(int x, int y){
       board[x-1][y] = 0;
       board[x-2][y] = 0;
       board[x-3][y] = 0;
+      board[x-1][y+2] = 0;
+      board[x-2][y+2] = 0;
+      board[x-3][y+2] = 0;
+      
+      
     }
 }
 
@@ -339,16 +364,16 @@ void Z_erase(int x, int y){
 //T EN MATRIZ
 void T(int x, int y){
     delay(50);
+    if(x >=1 && board[x][y+1] == 0 && board[x][y] == 0 && board[x-1][y-1] == 0){
+      //Serial.println("Entro 2");
+      board[x-1][y] = 1;
+    }
+    delay(50);
     if((x == 0 || x >=1)&& board[x][y+1] == 0 && board[x][y-1] == 0&& board[x][y] == 0){
       //Serial.println("Entro 1");
       board[x][y+1] = 1;
       board[x][y] = 1;
       board[x][y-1] = 1;
-    }
-    delay(50);
-    if(x >=1 && board[x][y+1] == 0 && board[x][y] == 0 && board[x-1][y-1] == 0){
-      //Serial.println("Entro 2");
-      board[x-1][y] = 1;
     }
 }
 //LIMPIEZA DE RASTRO DE T
@@ -389,7 +414,14 @@ void I(int x, int y){
 void I_erase(int x, int y){
     delay(50);
     if(x >=2 && board[x][y] != 1){
-      board[x-3][y] = 0;  
+      board[x-3][y] = 0;
+      board[x-1][y+1] = 0;
+      board[x-2][y+1] = 0;
+      board[x-3][y+1] = 0;
+      board[x-1][y-1] = 0;
+      board[x-2][y-1] = 0;
+      board[x-3][y-1] = 0;
+        
     }
 }
 void printAll(){
@@ -477,72 +509,63 @@ void you_lose()
 }
 
 int c=0;
-int moving = 3;
 int a=0;
 int f=0;
 char form;
 bool next_form = true;
+int ri = 0, le = 0;
 void loop() {
-  
+     Serial.println("Tope");
+     delay(100);
+     if(digitalRead(r) ==1){
+        ri = 1;
+     }else if(digitalRead(l) ==1){
+        Serial.println(moving);
+        Serial.println(bmoving);
+        Serial.println("Izquierda");
+        le = 1;
+     }
+     
      if(next_form){
         Serial.println("Iniciando");
-        form = getForm();
+        form = 'I';
         next_form = false;
         c = 0;
      }
-     
-     if(form=='O'&& c<8){
+     delay(100);
+     Serial.print("Moving: ");
+     Serial.println(moving);
+     Serial.print("Before Moving: ");
+     Serial.println(bmoving);
+     if(form=='O'&& c<8 && moving>=0 && moving<7){
        O2(c,moving);
        c++;
      }
-     else if(form=='L' && c<8){
+     else if(form=='L' && c<8 && moving >=0 && moving <7){
        L(c,moving);
        c++;
      }
-     else if(form=='J' && c<8){
+     else if(form=='J' && c<8 && moving >=0 && moving <7){
        J(c,moving);
        c++;
      }
-     else if(form=='S' && c<8){
+     else if(form=='S' && c<8 && moving >0 && moving <7){
        S(c,moving);
        c++;
      }
-     else if(form=='Z' && c<8){
+     else if(form=='Z' && c<8 && moving >0 && moving <7){
        Z(c,moving);
        c++;
      }
-     else if(form=='T' && c<8){
+     else if(form=='T' && c<8 && moving >0 && moving <7){
        T(c,moving);
        c++;
      }
-     else if(form=='I' && c<8){
+     else if(form=='I' && c<8 && moving >=0 && moving <=7){
        I(c,moving);
        c++;
      }
-//     else if(c>=8 && s<8){
-//      if(s>2){
-//        O2(s,2);
-//       }else{
-//        O2(s,2);
-//       }
-//       s++;
-//     }
-//     else if(c>=8 && s>=8 && a<8){
-//      if(a>2){
-//        O2(a,4);
-//       }else{
-//        O2(a,4);
-//       }
-//       a++;
-//     }
-//     else if(c>=8 && s>=8 && a>=8 && f<8){
-//      if(f>2){
-//        O2(f,6);
-//       }else{
-//        O2(f,6);
-//       }
-//       f++;
-//     }
+     
      delay(100);
      for(int i=0; i<8; i++){
         useds[i] = searchBoard(i);
@@ -586,16 +609,17 @@ void loop() {
         }  
      }
      else{
+     
      //VERIFICADOR DE LINEAS COMPLETAS
      //SI ESTAN COMPLETAS LAS ELIMINA
      for(int i=0; i<8; i++){
         for(int j=0; j<8; j++){
         if(board[i][j]==0){
-          Serial.println("Esta incompleta");
+          //Serial.println("Esta incompleta");
           counter = 0;
           continue;
         }else{
-          Serial.println("Sumando al counter");
+          //Serial.println("Sumando al counter");
           filesToMove[i] = true;
           counter++;
         }
@@ -631,5 +655,14 @@ void loop() {
        Serial.println("Termino");
        next_form = true;
      }
+     
+     if(ri == 1){
+        moving--;
+        ri=0;
+     }else if(le == 1){
+        moving++;
+        le=0;
+     }
+     
 }
 

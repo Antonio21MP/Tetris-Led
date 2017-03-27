@@ -10,6 +10,7 @@ int board[8][8];
 
 //ARREGLO DE POSICIONES ENCENDIDAS
 bool useds[8];
+
 bool filesToMove[8];
 
 //CONTADOR DE LIMPIEZA CUANDO LLEGE A 8 PERMITE
@@ -28,13 +29,16 @@ void setup() {
     }
     useds[i] = false;  
   }
+  for(int i=0; i<8; i++){
+    filesToMove[i] = false;
+  }
   Clear();
   Serial.begin(9600);
-  for(int i=0; i<8; i++){
-        board[7][i] = 1;   
-     }
-     board[7][3] = 0;
-     board[7][4] = 0;
+//  for(int i=0; i<8; i++){
+//        board[7][i] = 1;   
+//     }
+//     board[7][3] = 0;
+//     board[7][4] = 0;
 }
 //LIMPIA TODA LA MATRIZ LED DEJANDOLA APAGADA DEL TODO
 void Clear() {
@@ -189,19 +193,22 @@ void reloadBoard(){
 }
 //CUADRO EN MATRIZ
 void O2(int x, int y){
+    delay(50);
     if((x == 0 || x >= 1) && board[x][y] == 0 && board[x][y+1] == 0){
-      Serial.println("Entro 1");
+      //Serial.println("Entro 1");
       board[x][y] = 1;
       board[x][y+1] = 1; 
     }
+    delay(50);
     if(x >=1 && board[x][y] == 0 && board[x][y+1] == 0){
-      Serial.println("Entro 2");
+      //Serial.println("Entro 2");
       board[x-1][y] = 1;
       board[x-1][y+1] = 1;
     }
 }
 //LIMPIEZA DE RASTRO DEL CUADRO
 void O2_erase(int x, int y){
+    delay(50);
     if(x >=2 && board[x][y] != 1 && board[x][y+1] != 1){
       board[x-2][y] = 0;
       board[x-2][y+1] = 0; 
@@ -209,6 +216,7 @@ void O2_erase(int x, int y){
 }
 
 void printAll(){
+  Serial.println("MATRIZ OF INTS");
   for(int i=0; i<8; i++){
      for(int j=0; j<8; j++){
       Serial.print(board[i][j]);
@@ -218,24 +226,42 @@ void printAll(){
 }
 int c=0;
 int s=0;
+int a=0;
+int f=0;
+
 void loop() {
      if(c<8){
        if(c>2){
-        O2(c,3);
+        O2(c,0);
        }else{
-        O2(c,3);
+        O2(c,0);
        }
        c++;
      }
-     
-//     if(i>=8 && s<8){
-//      if(s>2){
-//        O2(s,1);
-//       }else{
-//        O2(s,1);
-//       }
-//       s++;
-//     }
+     else if(c>=8 && s<8){
+      if(s>2){
+        O2(s,2);
+       }else{
+        O2(s,2);
+       }
+       s++;
+     }
+     else if(c>=8 && s>=8 && a<8){
+      if(a>2){
+        O2(a,4);
+       }else{
+        O2(a,4);
+       }
+       a++;
+     }
+     else if(c>=8 && s>=8 && a>=8 && f<8){
+      if(f>2){
+        O2(f,6);
+       }else{
+        O2(f,6);
+       }
+       f++;
+     }
      delay(100);
      for(int i=0; i<8; i++){
         useds[i] = searchBoard(i);
@@ -243,11 +269,17 @@ void loop() {
      reloadBoard();
      printAll();
      if(c<8){
-      O2_erase(c,3);
+      O2_erase(c,0);
      }
-//     if(i>=8 && s<8){
-//      O2_erase(s,1);
-//     }
+     else if(c>=8 && s<8){
+      O2_erase(s,2);
+     }
+     else if(c>=8 && s>=8 && a<8){
+      O2_erase(a,4);
+     }
+     else if(c>=8 && s>=8 && a>=8 && f<8){
+      O2_erase(f,6);
+     }
 
      else{
      //VERIFICADOR DE LINEAS COMPLETAS
@@ -255,16 +287,18 @@ void loop() {
      for(int i=0; i<8; i++){
         for(int j=0; j<8; j++){
         if(board[i][j]==0){
-          Serial.println("Esta incompleta");
+          //Serial.println("Esta incompleta");
           counter = 0;
           continue;
         }else{
-          Serial.println("Sumando al counter");
+          //Serial.println("Sumando al counter");
+          filesToMove[i] = true;
           counter++;
         }
         }
         if(counter==8){
           clearLine(i);
+          filesToMove[i] = false;
           counter = 0;
         }
         }
@@ -275,6 +309,7 @@ void loop() {
                 for(int w=0; w<8; w++){
                   board[r][w] = board[r-1][w];
                 }
+                clearLine(r-1);
               }
               filesToMove[r-1] = false;
             }

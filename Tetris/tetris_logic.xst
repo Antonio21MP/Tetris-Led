@@ -1,5 +1,0 @@
-set -tmpdir "C:/Users/anton/Documents/Proyecto/Tetris/xst/projnav.tmp"
-set -xsthdpdir "C:/Users/anton/Documents/Proyecto/Tetris/xst"
-elaborate
--ifn tetris_logic.prj
--ifmt mixed
